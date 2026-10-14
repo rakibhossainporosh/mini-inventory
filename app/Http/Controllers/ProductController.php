@@ -30,12 +30,20 @@ class ProductController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        $stats = [
+            'total' => Product::count(),
+            'in_stock' => Product::where('stock_quantity', '>=', 10)->count(),
+            'low_stock' => Product::whereBetween('stock_quantity', [1, 9])->count(),
+            'out_of_stock' => Product::where('stock_quantity', 0)->count(),
+        ];
+
         return Inertia::render('products/index', [
             'products' => $products,
             'filters' => [
                 'search' => $filters['search'] ?? '',
                 'status' => $filters['status'] ?? '',
             ],
+            'stats' => $stats,
         ]);
     }
 
