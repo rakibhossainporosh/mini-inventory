@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FormField from '@/components/inventory/FormField';
+import StockBadge from '@/components/inventory/StockBadge';
 
 interface StockAdjustment {
     id: number;
@@ -248,32 +249,6 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                 toast.error(errs.delete || 'Failed to delete product.');
             },
         });
-    };
-
-    // Stock Badge Helper
-    const renderStockBadge = (qty: number) => {
-        if (qty === 0) {
-            return (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                    <span className="size-1.5 rounded-full bg-rose-500" />
-                    Out of Stock ({qty})
-                </span>
-            );
-        }
-        if (qty < 10) {
-            return (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                    <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
-                    Low Stock ({qty})
-                </span>
-            );
-        }
-        return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                In Stock ({qty})
-            </span>
-        );
     };
 
     return (
@@ -570,7 +545,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                                 })}
                                             </td>
                                             <td className="py-4 px-6">
-                                                {renderStockBadge(product.stock_quantity)}
+                                                <StockBadge quantity={product.stock_quantity} />
                                             </td>
                                             <td className="py-4 px-6 text-right whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-1.5">
