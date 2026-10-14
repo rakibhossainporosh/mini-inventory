@@ -292,113 +292,92 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                 {/* KPI Metrics Cards */}
                 {stats && (
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div
-                            onClick={() => {
-                                setStatus('');
-                                applyFilters(search, '');
-                            }}
-                            className={`p-4 rounded-xl border bg-white shadow-xs transition-all cursor-pointer ${
-                                status === ''
-                                    ? 'border-indigo-600 ring-2 ring-indigo-600/10'
-                                    : 'border-slate-200 hover:border-slate-300'
-                            }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                                    Total Products
-                                </span>
-                                <div className="p-2 rounded-lg bg-slate-100 text-slate-600">
-                                    <Package className="size-4" />
+                        {[
+                            {
+                                key: '',
+                                label: 'Total Products',
+                                count: stats.total,
+                                subtext: 'items',
+                                icon: Package,
+                                activeClass: 'bg-white border-indigo-600 ring-2 ring-indigo-600/10',
+                                defaultClass: 'bg-white border-slate-200 hover:border-slate-300',
+                                labelColor: 'text-slate-500',
+                                iconStyle: 'bg-slate-100 text-slate-600',
+                                countColor: 'text-slate-900',
+                                subtextColor: 'text-slate-500',
+                            },
+                            {
+                                key: 'in_stock',
+                                label: 'In Stock (10+)',
+                                count: stats.in_stock,
+                                subtext: 'healthy',
+                                icon: CheckCircle2,
+                                activeClass: 'bg-emerald-50/80 border-emerald-600 ring-2 ring-emerald-600/15',
+                                defaultClass: 'bg-white border-slate-200 hover:border-emerald-300',
+                                labelColor: 'text-emerald-700',
+                                iconStyle: 'bg-emerald-100/70 text-emerald-700',
+                                countColor: 'text-emerald-800',
+                                subtextColor: 'text-emerald-700/80',
+                            },
+                            {
+                                key: 'low_stock',
+                                label: 'Low Stock (<10)',
+                                count: stats.low_stock,
+                                subtext: 'reorder soon',
+                                icon: AlertTriangle,
+                                activeClass: 'bg-amber-50/80 border-amber-600 ring-2 ring-amber-600/15',
+                                defaultClass: 'bg-white border-slate-200 hover:border-amber-300',
+                                labelColor: 'text-amber-700',
+                                iconStyle: 'bg-amber-100/70 text-amber-700',
+                                countColor: 'text-amber-800',
+                                subtextColor: 'text-amber-700/80',
+                            },
+                            {
+                                key: 'out_of_stock',
+                                label: 'Out of Stock (0)',
+                                count: stats.out_of_stock,
+                                subtext: 'critical',
+                                icon: XCircle,
+                                activeClass: 'bg-rose-50/80 border-rose-600 ring-2 ring-rose-600/15',
+                                defaultClass: 'bg-white border-slate-200 hover:border-rose-300',
+                                labelColor: 'text-rose-700',
+                                iconStyle: 'bg-rose-100/70 text-rose-700',
+                                countColor: 'text-rose-800',
+                                subtextColor: 'text-rose-700/80',
+                            },
+                        ].map((card) => {
+                            const Icon = card.icon;
+                            const isActive = status === card.key;
+                            return (
+                                <div
+                                    key={card.key}
+                                    onClick={() => {
+                                        setStatus(card.key);
+                                        applyFilters(search, card.key);
+                                    }}
+                                    className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
+                                        isActive ? card.activeClass : card.defaultClass
+                                    }`}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <span className={`text-xs font-semibold uppercase tracking-wider ${card.labelColor}`}>
+                                            {card.label}
+                                        </span>
+                                        <div className={`p-2 rounded-lg ${card.iconStyle}`}>
+                                            <Icon className="size-4" />
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 flex items-baseline gap-2">
+                                        <span className={`text-2xl font-bold tracking-tight ${card.countColor}`}>
+                                            {card.count}
+                                        </span>
+                                        <span className={`text-xs font-medium ${card.subtextColor}`}>
+                                            {card.subtext}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-slate-900">
-                                    {stats.total}
-                                </span>
-                                <span className="text-xs text-slate-500 font-medium">items</span>
-                            </div>
-                        </div>
-
-                        <div
-                            onClick={() => {
-                                setStatus('in_stock');
-                                applyFilters(search, 'in_stock');
-                            }}
-                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
-                                status === 'in_stock'
-                                    ? 'bg-emerald-50/80 border-emerald-600 ring-2 ring-emerald-600/15'
-                                    : 'bg-white border-slate-200 hover:border-emerald-300'
-                            }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
-                                    In Stock (10+)
-                                </span>
-                                <div className="p-2 rounded-lg bg-emerald-100/70 text-emerald-700">
-                                    <CheckCircle2 className="size-4" />
-                                </div>
-                            </div>
-                            <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-emerald-800">
-                                    {stats.in_stock}
-                                </span>
-                                <span className="text-xs text-emerald-700/80 font-medium">healthy</span>
-                            </div>
-                        </div>
-
-                        <div
-                            onClick={() => {
-                                setStatus('low_stock');
-                                applyFilters(search, 'low_stock');
-                            }}
-                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
-                                status === 'low_stock'
-                                    ? 'bg-amber-50/80 border-amber-600 ring-2 ring-amber-600/15'
-                                    : 'bg-white border-slate-200 hover:border-amber-300'
-                            }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-amber-700">
-                                    Low Stock (&lt;10)
-                                </span>
-                                <div className="p-2 rounded-lg bg-amber-100/70 text-amber-700">
-                                    <AlertTriangle className="size-4" />
-                                </div>
-                            </div>
-                            <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-amber-800">
-                                    {stats.low_stock}
-                                </span>
-                                <span className="text-xs text-amber-700/80 font-medium">reorder soon</span>
-                            </div>
-                        </div>
-
-                        <div
-                            onClick={() => {
-                                setStatus('out_of_stock');
-                                applyFilters(search, 'out_of_stock');
-                            }}
-                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
-                                status === 'out_of_stock'
-                                    ? 'bg-rose-50/80 border-rose-600 ring-2 ring-rose-600/15'
-                                    : 'bg-white border-slate-200 hover:border-rose-300'
-                            }`}
-                        >
-                            <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-rose-700">
-                                    Out of Stock (0)
-                                </span>
-                                <div className="p-2 rounded-lg bg-rose-100/70 text-rose-700">
-                                    <XCircle className="size-4" />
-                                </div>
-                            </div>
-                            <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-rose-800">
-                                    {stats.out_of_stock}
-                                </span>
-                                <span className="text-xs text-rose-700/80 font-medium">critical</span>
-                            </div>
-                        </div>
+                            );
+                        })}
                     </div>
                 )}
 
