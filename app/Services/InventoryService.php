@@ -25,9 +25,9 @@ class InventoryService
             ]);
 
             $lockedProduct->adjustments()->create([
-                'type'            => $type,
+                'type' => $type,
                 'quantity_change' => $quantity,
-                'reason'          => $reason,
+                'reason' => $reason,
             ]);
 
             return $lockedProduct;

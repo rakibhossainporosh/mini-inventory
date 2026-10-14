@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,8 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => ['required', 'string', 'max:255'],
-            'sku'   => [
+            'name' => ['required', 'string', 'max:255'],
+            'sku' => [
                 'required',
                 'string',
                 'max:100',
@@ -38,7 +39,7 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             'sku.unique' => 'This SKU is already in use by another product.',
-            'price.min'  => 'Product price must be greater than zero.',
+            'price.min' => 'Product price must be greater than zero.',
         ];
     }
 }

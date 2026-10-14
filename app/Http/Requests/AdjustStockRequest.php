@@ -12,7 +12,7 @@ class AdjustStockRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,17 +23,17 @@ class AdjustStockRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type'     => ['required', 'in:increase,decrease'],
+            'type' => ['required', 'in:increase,decrease'],
             'quantity' => ['required', 'integer', 'min:1'],
-            'reason'   => ['required', 'string', 'max:255'],
+            'reason' => ['required', 'string', 'max:255'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'type.in'         => 'Adjustment type must be either increase or decrease.',
-            'quantity.min'    => 'Adjustment quantity must be at least 1.',
+            'type.in' => 'Adjustment type must be either increase or decrease.',
+            'quantity.min' => 'Adjustment quantity must be at least 1.',
             'reason.required' => 'Please provide a valid reason for this stock adjustment.',
         ];
     }

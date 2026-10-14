@@ -12,7 +12,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,9 +23,9 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'           => ['required', 'string', 'max:255'],
-            'sku'            => ['required', 'string', 'max:100', 'unique:products,sku'],
-            'price'          => ['required', 'numeric', 'min:0.01'],
+            'name' => ['required', 'string', 'max:255'],
+            'sku' => ['required', 'string', 'max:100', 'unique:products,sku'],
+            'price' => ['required', 'numeric', 'min:0.01'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
         ];
     }
@@ -33,8 +33,8 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sku.unique'         => 'This SKU is already assigned to another product. Please use a unique SKU.',
-            'price.min'          => 'Product price must be greater than zero.',
+            'sku.unique' => 'This SKU is already assigned to another product. Please use a unique SKU.',
+            'price.min' => 'Product price must be greater than zero.',
             'stock_quantity.min' => 'Initial stock quantity cannot be negative.',
         ];
     }
