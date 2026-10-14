@@ -19,6 +19,7 @@ import {
     Clock,
     AlertCircle,
     Check,
+    Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import FormField from '@/components/inventory/FormField';
@@ -154,6 +155,33 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
         });
         productForm.clearErrors();
         setIsProductModalOpen(true);
+    };
+
+    const handleGenerateSku = () => {
+        let prefix = 'PRD';
+        const name = productForm.data.name.trim();
+        if (name) {
+            const words = name.split(/\s+/).filter(Boolean);
+            if (words.length >= 2) {
+                prefix = words
+                    .slice(0, 2)
+                    .map((w) => w.replace(/[^a-zA-Z0-9]/g, '').slice(0, 3).toUpperCase())
+                    .filter(Boolean)
+                    .join('-');
+            } else {
+                prefix = words[0].replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase();
+            }
+        }
+        if (!prefix) {
+            prefix = 'PRD';
+        }
+
+        const randomChars = Math.random().toString(36).substring(2, 6).toUpperCase();
+        const randomDigits = Math.floor(100 + Math.random() * 900);
+        const generatedSku = `${prefix}-${randomChars}${randomDigits}`;
+
+        productForm.setData('sku', generatedSku);
+        productForm.clearErrors('sku');
     };
 
     const handleProductSubmit = (e: FormEvent) => {
@@ -667,6 +695,17 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 error={productForm.errors.sku}
                                 helperText="Must be unique across all products"
                                 required
+                                rightAction={
+                                    <button
+                                        type="button"
+                                        onClick={handleGenerateSku}
+                                        title="Auto-generate unique SKU"
+                                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-300 hover:border-indigo-600 bg-slate-50 hover:bg-indigo-50/70 text-xs font-semibold text-slate-700 hover:text-indigo-600 transition shadow-2xs cursor-pointer shrink-0"
+                                    >
+                                        <Sparkles className="size-3.5 text-indigo-600" />
+                                        <span>Generate</span>
+                                    </button>
+                                }
                             />
 
                             <FormField
