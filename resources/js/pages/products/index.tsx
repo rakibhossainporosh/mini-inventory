@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useMemo } from 'react';
+import React, { useState, FormEvent, useMemo, useEffect } from 'react';
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import {
     Boxes,
@@ -77,6 +77,12 @@ const QUICK_REASONS = [
 ];
 
 export default function InventoryIndex({ products, filters, stats }: PageProps) {
+    // Ensure the page stays strictly in pristine light mode
+    useEffect(() => {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.style.colorScheme = 'light';
+    }, []);
+
     const { flash, errors: pageErrors } = usePage<{
         flash?: { success?: string; error?: string };
         errors?: { delete?: string };
@@ -220,7 +226,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
     const renderStockBadge = (qty: number) => {
         if (qty === 0) {
             return (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                     <span className="size-1.5 rounded-full bg-rose-500" />
                     Out of Stock ({qty})
                 </span>
@@ -228,14 +234,14 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
         }
         if (qty < 10) {
             return (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                     <span className="size-1.5 rounded-full bg-amber-500 animate-pulse" />
                     Low Stock ({qty})
                 </span>
             );
         }
         return (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <span className="size-1.5 rounded-full bg-emerald-500" />
                 In Stock ({qty})
             </span>
@@ -243,27 +249,27 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-slate-50 text-slate-900 antialiased py-8 px-4 sm:px-6 lg:px-8">
             <Head title="Mini Inventory Management" />
 
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Top Header Bar */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-xs border border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="bg-white rounded-2xl p-6 shadow-xs border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start sm:items-center gap-4">
                         <div className="size-12 rounded-xl bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 shrink-0">
                             <Boxes className="size-6" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
                                     Mini Inventory Management
                                 </h1>
-                                <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
                                     <span className="size-1.5 rounded-full bg-indigo-500" />
                                     Live
                                 </span>
                             </div>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                            <p className="text-sm text-slate-500 mt-0.5">
                                 Real-time catalog tracking, stock adjustments, and concurrency-safe audit history.
                             </p>
                         </div>
@@ -272,7 +278,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                     <div className="flex items-center gap-3">
                         <button
                             onClick={openCreateModal}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
+                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-sm font-semibold shadow-xs hover:shadow-sm transition-all duration-150 cursor-pointer"
                         >
                             <Plus className="size-4 stroke-[2.5]" />
                             <span>Add Product</span>
@@ -288,25 +294,25 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 setStatus('');
                                 applyFilters(search, '');
                             }}
-                            className={`p-4 rounded-xl border bg-white dark:bg-slate-900 shadow-xs transition-all cursor-pointer ${
+                            className={`p-4 rounded-xl border bg-white shadow-xs transition-all cursor-pointer ${
                                 status === ''
-                                    ? 'border-indigo-500 ring-2 ring-indigo-500/10'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                                    ? 'border-indigo-600 ring-2 ring-indigo-600/10'
+                                    : 'border-slate-200 hover:border-slate-300'
                             }`}
                         >
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                                     Total Products
                                 </span>
-                                <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                <div className="p-2 rounded-lg bg-slate-100 text-slate-600">
                                     <Package className="size-4" />
                                 </div>
                             </div>
                             <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                <span className="text-2xl font-bold tracking-tight text-slate-900">
                                     {stats.total}
                                 </span>
-                                <span className="text-xs text-slate-500">items</span>
+                                <span className="text-xs text-slate-500 font-medium">items</span>
                             </div>
                         </div>
 
@@ -315,25 +321,25 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 setStatus('in_stock');
                                 applyFilters(search, 'in_stock');
                             }}
-                            className={`p-4 rounded-xl border bg-white dark:bg-slate-900 shadow-xs transition-all cursor-pointer ${
+                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
                                 status === 'in_stock'
-                                    ? 'border-emerald-500 ring-2 ring-emerald-500/10'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                                    ? 'bg-emerald-50/80 border-emerald-600 ring-2 ring-emerald-600/15'
+                                    : 'bg-white border-slate-200 hover:border-emerald-300'
                             }`}
                         >
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
                                     In Stock (10+)
                                 </span>
-                                <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                                <div className="p-2 rounded-lg bg-emerald-100/70 text-emerald-700">
                                     <CheckCircle2 className="size-4" />
                                 </div>
                             </div>
                             <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-emerald-700 dark:text-emerald-300">
+                                <span className="text-2xl font-bold tracking-tight text-emerald-800">
                                     {stats.in_stock}
                                 </span>
-                                <span className="text-xs text-emerald-600/70">healthy</span>
+                                <span className="text-xs text-emerald-700/80 font-medium">healthy</span>
                             </div>
                         </div>
 
@@ -342,25 +348,25 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 setStatus('low_stock');
                                 applyFilters(search, 'low_stock');
                             }}
-                            className={`p-4 rounded-xl border bg-white dark:bg-slate-900 shadow-xs transition-all cursor-pointer ${
+                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
                                 status === 'low_stock'
-                                    ? 'border-amber-500 ring-2 ring-amber-500/10'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                                    ? 'bg-amber-50/80 border-amber-600 ring-2 ring-amber-600/15'
+                                    : 'bg-white border-slate-200 hover:border-amber-300'
                             }`}
                         >
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-amber-700">
                                     Low Stock (&lt;10)
                                 </span>
-                                <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400">
+                                <div className="p-2 rounded-lg bg-amber-100/70 text-amber-700">
                                     <AlertTriangle className="size-4" />
                                 </div>
                             </div>
                             <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-amber-700 dark:text-amber-300">
+                                <span className="text-2xl font-bold tracking-tight text-amber-800">
                                     {stats.low_stock}
                                 </span>
-                                <span className="text-xs text-amber-600/70">reorder soon</span>
+                                <span className="text-xs text-amber-700/80 font-medium">reorder soon</span>
                             </div>
                         </div>
 
@@ -369,25 +375,25 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 setStatus('out_of_stock');
                                 applyFilters(search, 'out_of_stock');
                             }}
-                            className={`p-4 rounded-xl border bg-white dark:bg-slate-900 shadow-xs transition-all cursor-pointer ${
+                            className={`p-4 rounded-xl border shadow-xs transition-all cursor-pointer ${
                                 status === 'out_of_stock'
-                                    ? 'border-rose-500 ring-2 ring-rose-500/10'
-                                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                                    ? 'bg-rose-50/80 border-rose-600 ring-2 ring-rose-600/15'
+                                    : 'bg-white border-slate-200 hover:border-rose-300'
                             }`}
                         >
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-rose-700">
                                     Out of Stock (0)
                                 </span>
-                                <div className="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400">
+                                <div className="p-2 rounded-lg bg-rose-100/70 text-rose-700">
                                     <XCircle className="size-4" />
                                 </div>
                             </div>
                             <div className="mt-3 flex items-baseline gap-2">
-                                <span className="text-2xl font-bold tracking-tight text-rose-700 dark:text-rose-300">
+                                <span className="text-2xl font-bold tracking-tight text-rose-800">
                                     {stats.out_of_stock}
                                 </span>
-                                <span className="text-xs text-rose-600/70">critical</span>
+                                <span className="text-xs text-rose-700/80 font-medium">critical</span>
                             </div>
                         </div>
                     </div>
@@ -395,20 +401,20 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
                 {/* Flash Messages */}
                 {flash?.success && (
-                    <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 text-sm flex items-center gap-3">
+                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
                         <Check className="size-5 shrink-0 text-emerald-600" />
-                        <span>{flash.success}</span>
+                        <span className="font-medium">{flash.success}</span>
                     </div>
                 )}
                 {pageErrors?.delete && (
-                    <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-200 text-sm flex items-center gap-3">
+                    <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center gap-3">
                         <AlertCircle className="size-5 shrink-0 text-rose-600" />
-                        <span>{pageErrors.delete}</span>
+                        <span className="font-medium">{pageErrors.delete}</span>
                     </div>
                 )}
 
                 {/* Search & Filter Toolbar */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-xs border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="bg-white rounded-2xl p-4 shadow-xs border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="relative w-full sm:max-w-md">
                         <Search className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                         <input
@@ -419,7 +425,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 setSearch(e.target.value);
                                 applyFilters(e.target.value, status);
                             }}
-                            className="w-full pl-10 pr-9 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-hidden focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-3 focus:ring-indigo-500/20 transition-all"
+                            className="w-full pl-10 pr-9 py-2 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-indigo-600 focus:ring-3 focus:ring-indigo-600/15 transition-all"
                         />
                         {search && (
                             <button
@@ -427,7 +433,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                     setSearch('');
                                     applyFilters('', status);
                                 }}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                             >
                                 <X className="size-4" />
                             </button>
@@ -443,7 +449,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                     setStatus(e.target.value);
                                     applyFilters(search, e.target.value);
                                 }}
-                                className="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950 text-sm text-slate-900 dark:text-slate-100 font-medium focus:outline-hidden focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-3 focus:ring-indigo-500/20 transition-all cursor-pointer"
+                                className="w-full pl-8 pr-8 py-2 rounded-xl border border-slate-300 bg-white text-sm text-slate-900 font-medium focus:outline-hidden focus:border-indigo-600 focus:ring-3 focus:ring-indigo-600/15 transition-all cursor-pointer"
                             >
                                 <option value="">All Stock Statuses</option>
                                 <option value="in_stock">In Stock (10+)</option>
@@ -456,7 +462,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             <button
                                 onClick={handleClearFilters}
                                 title="Reset filters"
-                                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer shrink-0"
+                                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer shrink-0"
                             >
                                 <RotateCcw className="size-3.5" />
                                 <span className="hidden sm:inline">Reset</span>
@@ -466,46 +472,46 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                 </div>
 
                 {/* Data Table Card */}
-                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xs border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="border-b border-slate-200/80 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-950/50">
-                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                <tr className="border-b border-slate-200 bg-slate-50/80">
+                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                         Product
                                     </th>
-                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                         SKU
                                     </th>
-                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                         Price
                                     </th>
-                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th className="py-3.5 px-6 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                         Stock Status
                                     </th>
-                                    <th className="py-3.5 px-6 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th className="py-3.5 px-6 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                            <tbody className="divide-y divide-slate-100">
                                 {products.data.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} className="py-16 text-center">
                                             <div className="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                                <div className="size-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 mb-3">
+                                                <div className="size-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
                                                     <Package className="size-6" />
                                                 </div>
-                                                <h3 className="text-base font-semibold text-slate-800 dark:text-slate-200">
+                                                <h3 className="text-base font-semibold text-slate-800">
                                                     No products found
                                                 </h3>
-                                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                <p className="text-xs text-slate-500 mt-1">
                                                     No inventory matches your current search and filter criteria.
                                                 </p>
                                                 {(search || status) && (
                                                     <button
                                                         onClick={handleClearFilters}
-                                                        className="mt-4 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition cursor-pointer"
+                                                        className="mt-4 px-3.5 py-1.5 rounded-lg text-xs font-medium text-indigo-600 hover:bg-indigo-50 transition cursor-pointer"
                                                     >
                                                         Clear search & filters
                                                     </button>
@@ -517,19 +523,19 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                     products.data.map((product) => (
                                         <tr
                                             key={product.id}
-                                            className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors group"
+                                            className="hover:bg-slate-50/80 transition-colors group"
                                         >
                                             <td className="py-4 px-6">
-                                                <div className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+                                                <div className="font-semibold text-slate-900 text-sm">
                                                     {product.name}
                                                 </div>
                                             </td>
                                             <td className="py-4 px-6">
-                                                <span className="font-mono text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                                <span className="font-mono text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200">
                                                     {product.sku}
                                                 </span>
                                             </td>
-                                            <td className="py-4 px-6 text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                            <td className="py-4 px-6 text-sm font-semibold text-slate-900">
                                                 ${parseFloat(product.price).toLocaleString('en-US', {
                                                     minimumFractionDigits: 2,
                                                     maximumFractionDigits: 2,
@@ -543,7 +549,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                                     <button
                                                         onClick={() => openAdjustModal(product)}
                                                         title="Adjust Stock Quantity"
-                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition cursor-pointer"
+                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition cursor-pointer"
                                                     >
                                                         <ArrowUpDown className="size-3.5" />
                                                         <span>Adjust</span>
@@ -552,7 +558,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                                     <button
                                                         onClick={() => setHistoryProduct(product)}
                                                         title="View Stock Audit History"
-                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer"
                                                     >
                                                         <History className="size-3.5" />
                                                         <span>History</span>
@@ -561,7 +567,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                                     <button
                                                         onClick={() => openEditModal(product)}
                                                         title="Edit Product Details"
-                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition cursor-pointer"
+                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-600 hover:bg-indigo-50 transition cursor-pointer"
                                                     >
                                                         <Pencil className="size-3.5" />
                                                         <span>Edit</span>
@@ -570,7 +576,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                                     <button
                                                         onClick={() => confirmDelete(product)}
                                                         title="Delete Product"
-                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition cursor-pointer"
+                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="size-3.5" />
                                                         <span>Delete</span>
@@ -586,11 +592,11 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
                     {/* Pagination */}
                     {products.links.length > 3 && (
-                        <div className="p-4 bg-slate-50/75 dark:bg-slate-950/50 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+                        <div className="p-4 bg-slate-50/80 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
                             <div>
-                                Showing <span className="font-semibold text-slate-700 dark:text-slate-300">{products.from || 0}</span> to{' '}
-                                <span className="font-semibold text-slate-700 dark:text-slate-300">{products.to || 0}</span> of{' '}
-                                <span className="font-semibold text-slate-700 dark:text-slate-300">{products.total}</span> products
+                                Showing <span className="font-semibold text-slate-700">{products.from || 0}</span> to{' '}
+                                <span className="font-semibold text-slate-700">{products.to || 0}</span> of{' '}
+                                <span className="font-semibold text-slate-700">{products.total}</span> products
                             </div>
 
                             <div className="flex items-center gap-1">
@@ -603,7 +609,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                                             link.active
                                                 ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/70 dark:hover:bg-slate-800'
+                                                : 'text-slate-600 hover:bg-slate-200/80'
                                         } ${!link.url ? 'opacity-40 cursor-not-allowed hover:bg-transparent' : ''}`}
                                     />
                                 ))}
@@ -615,15 +621,15 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
             {/* Create / Edit Product Modal */}
             {isProductModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 overflow-hidden">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 p-6 overflow-hidden">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600">
                                     <PackagePlus className="size-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                                    <h2 className="text-base font-bold text-slate-900">
                                         {editingProduct ? 'Edit Product' : 'Create New Product'}
                                     </h2>
                                     <p className="text-xs text-slate-500">
@@ -635,7 +641,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             </div>
                             <button
                                 onClick={() => setIsProductModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer"
+                                className="text-slate-400 hover:text-slate-600 transition cursor-pointer"
                             >
                                 <X className="size-5" />
                             </button>
@@ -690,11 +696,11 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 />
                             )}
 
-                            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setIsProductModalOpen(false)}
-                                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-slate-100 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -713,15 +719,15 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
             {/* Stock Adjustment Modal */}
             {adjustingProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 overflow-hidden">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 p-6 overflow-hidden">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
+                                <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
                                     <ArrowUpDown className="size-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                                    <h2 className="text-base font-bold text-slate-900">
                                         Adjust Stock Level
                                     </h2>
                                     <p className="text-xs text-slate-500 truncate max-w-[240px]">
@@ -731,19 +737,19 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             </div>
                             <button
                                 onClick={() => setAdjustingProduct(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer"
+                                className="text-slate-400 hover:text-slate-600 transition cursor-pointer"
                             >
                                 <X className="size-5" />
                             </button>
                         </div>
 
                         {/* Visual Stock Calculation Preview Card */}
-                        <div className="mt-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                        <div className="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                             <div className="text-center">
-                                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+                                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                                     Current
                                 </span>
-                                <div className="text-lg font-bold text-slate-700 dark:text-slate-300">
+                                <div className="text-lg font-bold text-slate-800">
                                     {adjustingProduct.stock_quantity}
                                 </div>
                             </div>
@@ -753,10 +759,10 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             </span>
 
                             <div className="text-center">
-                                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+                                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                                     Change
                                 </span>
-                                <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                                <div className="text-lg font-bold text-indigo-600">
                                     {adjustForm.data.quantity || 0}
                                 </div>
                             </div>
@@ -764,14 +770,14 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             <span className="text-base font-bold text-slate-400">=</span>
 
                             <div className="text-center">
-                                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400">
+                                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                                     Projected
                                 </span>
                                 <div
                                     className={`text-lg font-bold ${
                                         projectedStock < 0
                                             ? 'text-rose-600 animate-pulse'
-                                            : 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-emerald-600'
                                     }`}
                                 >
                                     {projectedStock}
@@ -780,7 +786,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                         </div>
 
                         {projectedStock < 0 && (
-                            <p className="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1">
+                            <p className="mt-2 text-xs font-semibold text-rose-600 flex items-center gap-1">
                                 <AlertTriangle className="size-3.5 shrink-0" />
                                 Stock quantity cannot be decreased below zero!
                             </p>
@@ -788,7 +794,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
                         <form onSubmit={handleAdjustSubmit} className="mt-4 space-y-4">
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-semibold tracking-wide text-slate-700 dark:text-slate-300 uppercase">
+                                <label className="block text-xs font-semibold tracking-wide text-slate-700 uppercase">
                                     Adjustment Type <span className="text-rose-500">*</span>
                                 </label>
                                 <div className="grid grid-cols-2 gap-2">
@@ -797,8 +803,8 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                         onClick={() => adjustForm.setData('type', 'increase')}
                                         className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                                             adjustForm.data.type === 'increase'
-                                                ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 text-emerald-700 dark:text-emerald-300 ring-2 ring-emerald-500/20'
-                                                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-50'
+                                                ? 'bg-emerald-50 border-emerald-500 text-emerald-700 ring-2 ring-emerald-500/20'
+                                                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                                         }`}
                                     >
                                         <span>Increase (+)</span>
@@ -808,8 +814,8 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                         onClick={() => adjustForm.setData('type', 'decrease')}
                                         className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer ${
                                             adjustForm.data.type === 'decrease'
-                                                ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-500 text-rose-700 dark:text-rose-300 ring-2 ring-rose-500/20'
-                                                : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 hover:bg-slate-50'
+                                                ? 'bg-rose-50 border-rose-500 text-rose-700 ring-2 ring-rose-500/20'
+                                                : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                                         }`}
                                     >
                                         <span>Decrease (−)</span>
@@ -848,7 +854,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                             key={i}
                                             type="button"
                                             onClick={() => adjustForm.setData('reason', r)}
-                                            className="px-2 py-0.5 rounded-md text-[11px] bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+                                            className="px-2 py-0.5 rounded-md text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-600 transition cursor-pointer"
                                         >
                                             {r}
                                         </button>
@@ -856,11 +862,11 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
                                 <button
                                     type="button"
                                     onClick={() => setAdjustingProduct(null)}
-                                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                    className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-slate-100 transition cursor-pointer"
                                 >
                                     Cancel
                                 </button>
@@ -879,15 +885,15 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
             {/* Audit History Modal */}
             {historyProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 overflow-hidden">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 p-6 overflow-hidden">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                             <div className="flex items-center gap-3">
-                                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                                <div className="p-2.5 rounded-xl bg-slate-100 text-slate-600">
                                     <Clock className="size-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                                    <h2 className="text-base font-bold text-slate-900">
                                         Stock Audit History
                                     </h2>
                                     <p className="text-xs text-slate-500 truncate max-w-[280px]">
@@ -897,7 +903,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             </div>
                             <button
                                 onClick={() => setHistoryProduct(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition cursor-pointer"
+                                className="text-slate-400 hover:text-slate-600 transition cursor-pointer"
                             >
                                 <X className="size-5" />
                             </button>
@@ -914,19 +920,19 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                     {historyProduct.adjustments.map((adj) => (
                                         <div
                                             key={adj.id}
-                                            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/70 dark:border-slate-800 flex items-center justify-between gap-3 text-xs"
+                                            className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 flex items-center justify-between gap-3 text-xs"
                                         >
                                             <div className="flex items-center gap-3">
                                                 <span
                                                     className={`px-2 py-0.5 rounded-md font-bold font-mono text-[11px] ${
                                                         adj.type === 'increase'
-                                                            ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'
-                                                            : 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300'
+                                                            ? 'bg-emerald-100 text-emerald-700'
+                                                            : 'bg-rose-100 text-rose-700'
                                                     }`}
                                                 >
                                                     {adj.type === 'increase' ? `+${adj.quantity_change}` : `−${adj.quantity_change}`}
                                                 </span>
-                                                <span className="font-medium text-slate-800 dark:text-slate-200">
+                                                <span className="font-medium text-slate-800">
                                                     {adj.reason}
                                                 </span>
                                             </div>
@@ -944,7 +950,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             )}
                         </div>
 
-                        <div className="flex justify-end pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex justify-end pt-4 mt-4 border-t border-slate-100">
                             <button
                                 type="button"
                                 onClick={() => setHistoryProduct(null)}
@@ -959,21 +965,21 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
 
             {/* Custom Delete Confirmation Dialog */}
             {deletingProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 overflow-hidden">
-                        <div className="size-11 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl border border-slate-200 p-6 overflow-hidden">
+                        <div className="size-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mb-4">
                             <AlertTriangle className="size-6" />
                         </div>
 
-                        <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                        <h3 className="text-base font-bold text-slate-900">
                             Delete Product?
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            Are you sure you want to delete <strong className="text-slate-800 dark:text-slate-200">{deletingProduct.name}</strong> ({deletingProduct.sku})?
+                        <p className="text-xs text-slate-500 mt-1">
+                            Are you sure you want to delete <strong className="text-slate-800">{deletingProduct.name}</strong> ({deletingProduct.sku})?
                         </p>
 
                         {deletingProduct.stock_quantity > 0 && (
-                            <div className="mt-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2">
+                            <div className="mt-3 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
                                 <AlertCircle className="size-4 shrink-0 mt-0.5" />
                                 <span>
                                     This product currently has <strong>{deletingProduct.stock_quantity} items in stock</strong>. You must adjust stock to 0 before deleting.
@@ -985,7 +991,7 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                             <button
                                 type="button"
                                 onClick={() => setDeletingProduct(null)}
-                                className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                className="px-4 py-2 text-xs font-semibold rounded-xl text-slate-700 hover:bg-slate-100 transition cursor-pointer"
                             >
                                 Cancel
                             </button>
