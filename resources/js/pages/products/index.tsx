@@ -18,7 +18,6 @@ import {
     PackagePlus,
     Clock,
     AlertCircle,
-    Check,
     Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -89,6 +88,18 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
         flash?: { success?: string; error?: string };
         errors?: { delete?: string };
     }>().props;
+
+    useEffect(() => {
+        if (pageErrors?.delete) {
+            toast.error(pageErrors.delete);
+        }
+    }, [pageErrors?.delete]);
+
+    useEffect(() => {
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+    }, [flash?.error]);
 
     // Search & Filter state
     const [search, setSearch] = useState(filters.search || '');
@@ -378,20 +389,6 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                                 </div>
                             );
                         })}
-                    </div>
-                )}
-
-                {/* Flash Messages */}
-                {flash?.success && (
-                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
-                        <Check className="size-5 shrink-0 text-emerald-600" />
-                        <span className="font-medium">{flash.success}</span>
-                    </div>
-                )}
-                {pageErrors?.delete && (
-                    <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-center gap-3">
-                        <AlertCircle className="size-5 shrink-0 text-rose-600" />
-                        <span className="font-medium">{pageErrors.delete}</span>
                     </div>
                 )}
 
