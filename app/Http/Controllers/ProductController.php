@@ -30,9 +30,9 @@ class ProductController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Products/Index', [
+        return Inertia::render('products/index', [
             'products' => $products,
-            'filters'  => [
+            'filters' => [
                 'search' => $filters['search'] ?? '',
                 'status' => $filters['status'] ?? '',
             ],
