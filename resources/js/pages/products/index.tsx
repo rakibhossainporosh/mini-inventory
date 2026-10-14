@@ -618,30 +618,39 @@ export default function InventoryIndex({ products, filters, stats }: PageProps) 
                         </table>
                     </div>
 
-                    {/* Pagination */}
-                    {products.links.length > 3 && (
+                    {/* Pagination & Summary Footer */}
+                    {products.total > 0 && (
                         <div className="p-4 bg-slate-50/80 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
                             <div>
-                                Showing <span className="font-semibold text-slate-700">{products.from || 0}</span> to{' '}
-                                <span className="font-semibold text-slate-700">{products.to || 0}</span> of{' '}
+                                Showing <span className="font-semibold text-slate-700">{products.from || 1}</span> to{' '}
+                                <span className="font-semibold text-slate-700">{products.to || products.total}</span> of{' '}
                                 <span className="font-semibold text-slate-700">{products.total}</span> products
+                                {(search || status) && (
+                                    <span className="ml-1 text-slate-400 font-normal">
+                                        (filtered)
+                                    </span>
+                                )}
                             </div>
 
-                            <div className="flex items-center gap-1">
-                                {products.links.map((link, idx) => (
-                                    <button
-                                        key={idx}
-                                        disabled={!link.url}
-                                        onClick={() => link.url && router.get(link.url, {}, { preserveState: true })}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
-                                            link.active
-                                                ? 'bg-indigo-600 text-white font-semibold shadow-xs'
-                                                : 'text-slate-600 hover:bg-slate-200/80'
-                                        } ${!link.url ? 'opacity-40 cursor-not-allowed hover:bg-transparent' : ''}`}
-                                    />
-                                ))}
-                            </div>
+                            {products.links && products.links.length > 0 && (
+                                <div className="flex items-center gap-1">
+                                    {products.links.map((link, idx) => (
+                                        <button
+                                            key={idx}
+                                            disabled={!link.url || link.active}
+                                            onClick={() => link.url && router.get(link.url, {}, { preserveState: true })}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                                                link.active
+                                                    ? 'bg-indigo-600 text-white font-semibold shadow-xs cursor-default'
+                                                    : link.url
+                                                      ? 'text-slate-600 hover:bg-slate-200/80 cursor-pointer'
+                                                      : 'text-slate-400 opacity-40 cursor-not-allowed hover:bg-transparent'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
